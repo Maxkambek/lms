@@ -30,15 +30,32 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    ROLE = {
+        "Teacher": "Teacher",
+        "Student": "Student",
+    }
     name = models.CharField(max_length=350)
     last_name = models.CharField(max_length=132, null=True, blank=True)
     phone = models.CharField(validators=[phone_regex], max_length=12, unique=True)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
+    role = models.CharField(choices=ROLE, max_length=20)
 
     objects = UserManager()
     USERNAME_FIELD = 'phone'
+
+    def __str__(self):
+        return self.phone
+
+
+class VerifyPhone(models.Model):
+    class Meta:
+        verbose_name = ("Telefon raqamni tasdiqlash")
+        verbose_name_plural = ("Telefon raqam tasdiqlash")
+
+    phone = models.CharField(max_length=15, verbose_name="Telefon raqam")
+    code = models.CharField(max_length=10, verbose_name="Kod")
 
     def __str__(self):
         return self.phone
