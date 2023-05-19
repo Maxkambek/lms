@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'rest_framework',
+    'rest_framework.authtoken',
     'accounts',
     'main',
 ]
@@ -82,21 +83,21 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LOCALE_PATHS = (
-    os.path.join(BASE_DIR, 'locale'),
-)
-LANGUAGES = (
-    ('uz', 'Uzbek'),
-    ('ky', 'Kyrgyz')
-)
-DEFAULT_LANGUAGE = 1
-LANGUAGE_CODE = 'uz'
-
-MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
-MODELTRANSLATION_LANGUAGES = ('uz', 'ky')
-# MODELTRANSLATION_TRANSLATION_FILES = (
-#     'main.translation',
+# LOCALE_PATHS = (
+#     os.path.join(BASE_DIR, 'locale'),
 # )
+# LANGUAGES = (
+#     ('uz', 'Uzbek'),
+#     ('ky', 'Kyrgyz')
+# )
+# DEFAULT_LANGUAGE = 1
+LANGUAGE_CODE = 'ru'
+
+# MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
+# MODELTRANSLATION_LANGUAGES = ('uz', 'ky')
+# # MODELTRANSLATION_TRANSLATION_FILES = (
+# #     'main.translation',
+# # )
 
 TIME_ZONE = 'Asia/Tashkent'
 

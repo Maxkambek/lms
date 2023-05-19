@@ -5,35 +5,30 @@ from .models import User, phone_regex
 class VerifyPhoneSerializer(serializers.Serializer):
     phone = serializers.CharField(validators=[phone_regex], max_length=12)
     code = serializers.IntegerField(max_value=9999)
+    password = serializers.CharField(max_length=64)
+    last_name = serializers.CharField(max_length=123)
+    name = serializers.CharField(max_length=123)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['phone', 'password']
+        fields = ['phone']
 
-    phone = serializers.CharField(max_length=12, validators=[phone_regex])
-    password = serializers.CharField(max_length=64, min_length=4, write_only=True)
-
-    def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+    phone = serializers.CharField(max_length=13)
 
 
-class LoginSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['phone', 'password']
-
-    phone = serializers.CharField(validators=[phone_regex])
-    password = serializers.CharField(write_only=True)
+class LoginSerializer(serializers.Serializer):
+    phone = serializers.CharField()
+    password = serializers.CharField()
 
 
 class ResetPasswordSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=12, validators=[phone_regex])
+    phone = serializers.CharField(max_length=13)
 
 
 class ResetPasswordConfirmSerializer(serializers.Serializer):
-    phone = serializers.CharField(max_length=12, validators=[phone_regex])
+    phone = serializers.CharField(max_length=13)
     password = serializers.CharField(max_length=64)
 
 
@@ -51,5 +46,5 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'phone', 'name', 'last_name']
 
-    phone = serializers.CharField(max_length=12, validators=[phone_regex])
+    phone = serializers.CharField(max_length=13, validators=[phone_regex])
     id = serializers.IntegerField(read_only=True)

@@ -27,15 +27,10 @@ admin.site.site_title = 'LMS'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-]
-
-urlpatterns += i18n_patterns(
     path('user/', include('accounts.urls')),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('main/', include('main.urls')),
+    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
     re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
-    prefix_default_language=False
-
-)
+]

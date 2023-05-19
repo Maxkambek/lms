@@ -19,7 +19,8 @@ class RegisterAPI(generics.GenericAPIView):
         if User.objects.filter(phone=phone, is_active=True).first():
             return response.Response({'message': "This number already exist"}, status=status.HTTP_302_FOUND)
         code = str(randint(1000, 10000))
-        verify(phone, code)
+        if not VerifyPhone.objects.filter(phone=phone):
+            verify(phone, code)
         VerifyPhone.objects.create(phone=phone, code=code)
         return response.Response({"success": True, 'message': "A confirmation code was sent to the phone number!!!"},
                                  status=status.HTTP_200_OK)
@@ -45,8 +46,13 @@ class RegisterConfirmAPI(generics.GenericAPIView):
             user_n.is_active = True
             user_n.save()
             token = Token.objects.create(user=user_n)
+            data = {
+                'message': 'User verified',
+                'token': str(token.key),
+                'role': user_n.role
+            }
         else:
-            user = User.objects.create(
+            user = User.objects.create_user(
                 phone=phone,
                 password=password,
                 last_name=last_name,
@@ -55,38 +61,34 @@ class RegisterConfirmAPI(generics.GenericAPIView):
             user.is_active = True
             user.save()
             token = Token.objects.create(user=user)
-        data = {
-            'message': 'User verified',
-            'token': str(token.key)
-        }
+            data = {
+                'message': 'User verified',
+                'token': str(token.key),
+                'role': user.role
+            }
         return response.Response(data, status=status.HTTP_201_CREATED)
 
 
 class LoginAPI(generics.GenericAPIView):
-    def get_queryset(self):
-        return User.objects.all()
+    serializer_class = LoginSerializer
 
-    def get_serializer_class(self):
-        return LoginSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        phone = request.data['phone']
-        pas = request.data['password']
-        if not User.objects.filter(phone=phone).first():
-            return response.Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
-        user = authenticate(phone=phone, password=pas)
-        if not user:
-            return response.Response({'message': 'Password incorrect'}, status=status.HTTP_401_UNAUTHORIZED)
-        token = Token.objects.get(user=user)
-        data = dict()
-        data['token'] = token.key
-        user_serializer = UserSerializer(user).data
-        for k, v in user_serializer.items():
-            data[k] = v
-        data['success'] = True
-        return response.Response(data, status=status.HTTP_200_OK)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            # print(serializer.data)
+            phone = serializer.data['phone']
+            # print(phone)
+            password = serializer.data['password']
+            user = User.objects.filter(phone=phone).first()
+            if not user:
+                return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+            if not user.check_password(password):
+                return Response({"message": 'Password is incorrect'}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            token, created = Token.objects.get_or_create(user=user)
+            return Response(
+                {'Phone': phone, 'token': token.key, 'role': user.role}, status=status.HTTP_200_OK)
+        return Response({'success': False, 'message': 'Phone or password is invalid'},
+                        status=status.HTTP_404_NOT_FOUND)
 
 
 class ChangePasswordAPI(generics.GenericAPIView):
@@ -163,9 +165,9 @@ class ResetPasswordConfirmAPI(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=self.request.data)
+        serializer.is_valid(raise_exception=True)
         phone = serializer.validated_data['phone']
         pas1 = serializer.validated_data['password']
-        serializer.is_valid(raise_exception=True)
         user = User.objects.filter(phone=phone).first()
         user.set_password(pas1)
         user.save()

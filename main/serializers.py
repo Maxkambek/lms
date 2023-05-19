@@ -6,7 +6,7 @@ from accounts.serializers import UserSerializer
 class MainTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = MainTest
-        fields = ['id', 'question_name', 'answer_a', 'answer_b', 'answer_c', 'answer_d']
+        fields = ['id', 'answer_true', 'question_name', 'answer_a', 'answer_b', 'answer_c', 'answer_d']
 
 
 class TimetableSerializer(serializers.ModelSerializer):
