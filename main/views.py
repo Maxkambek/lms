@@ -105,3 +105,12 @@ class TaskCreateAPIView(generics.CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class MyTasksListAPIView(generics.ListAPIView):
+    serializer_class = SubjectItemsSerializer
+
+    def get_queryset(self):
+        group_id = GroupMembers.objects.filter(user=self.request.user).first()
+        queryset = SubjectItems.objects.filter(group_id=group_id)
+        return queryset

@@ -12,5 +12,6 @@ urlpatterns = [
     path('user-absence/', views.UserAbsenceListAPIView.as_view()),
     path('user-subject-list/', views.UserSubjectsListAPIView.as_view()),
     path('task-create/', views.TaskCreateAPIView.as_view()),
+    path('my-tasks/', views.TaskCreateAPIView.as_view()),
 
 ]

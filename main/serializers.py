@@ -43,11 +43,10 @@ class SubjectItemsSerializer(serializers.ModelSerializer):
 
 class SubjectSerializer(serializers.ModelSerializer):
     teacher = UserSerializer()
-    subject_items = SubjectItemsSerializer()
 
     class Meta:
         model = Subject
-        fields = ['id', 'name', 'teacher', 'subject_items']
+        fields = ['id', 'name', 'teacher']
 
 
 class UserSubjectListSerializer(serializers.ModelSerializer):

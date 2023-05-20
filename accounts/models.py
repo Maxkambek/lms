@@ -1,12 +1,6 @@
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-from django.core.validators import RegexValidator
-
-phone_regex = RegexValidator(
-    regex=r"^998[378]{2}|9[01345789]\d{7}$",
-    message="Phone number must be entered in the format: '998 [XX] [XXX XX XX]'. Up to 12 digits allowed."
-)
 
 
 class UserManager(BaseUserManager):
@@ -50,12 +44,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class VerifyPhone(models.Model):
-    class Meta:
-        verbose_name = ("Telefon raqamni tasdiqlash")
-        verbose_name_plural = ("Telefon raqam tasdiqlash")
-
-    phone = models.CharField(max_length=15, verbose_name="Telefon raqam")
-    code = models.CharField(max_length=10, verbose_name="Kod")
+    phone = models.CharField(max_length=15, verbose_name="Verify Phone")
+    code = models.CharField(max_length=10, verbose_name="Code")
 
     def __str__(self):
         return self.phone

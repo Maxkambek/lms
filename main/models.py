@@ -66,7 +66,7 @@ class UserAbsence(models.Model):
 
 
 class SubjectItems(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='subject_items')
+    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     deadline = models.CharField(max_length=30)
     ball_max = models.FloatField(default=10)
@@ -74,4 +74,4 @@ class SubjectItems(models.Model):
     task_file = models.FileField(upload_to='files/')
 
     def __str__(self):
-        return self.subject.name
+        return self.group.name
