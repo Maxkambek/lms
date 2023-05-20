@@ -35,18 +35,19 @@ class UserSubjectSerializer(serializers.ModelSerializer):
         fields = ['subject']
 
 
-class SubjectSerializer(serializers.ModelSerializer):
-    teacher = UserSerializer()
-
-    class Meta:
-        model = Subject
-        fields = ['id', 'name', 'teacher']
-
-
 class SubjectItemsSerializer(serializers.ModelSerializer):
     class Meta:
         model = SubjectItems
         fields = ['id', 'deadline', 'ball_max', 'task_file', 'group']
+
+
+class SubjectSerializer(serializers.ModelSerializer):
+    teacher = UserSerializer()
+    subject_items = SubjectItemsSerializer()
+
+    class Meta:
+        model = Subject
+        fields = ['id', 'name', 'teacher', 'subject_items']
 
 
 class UserSubjectListSerializer(serializers.ModelSerializer):
@@ -55,7 +56,7 @@ class UserSubjectListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserSubject
-        fields = ['id', 'subject', 'subject_items']
+        fields = ['id', 'subject']
 
 
 class UserAbsenceSerializer(serializers.ModelSerializer):
