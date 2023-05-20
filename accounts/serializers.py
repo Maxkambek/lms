@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import User, phone_regex
+from .models import User
 
 
 class VerifyPhoneSerializer(serializers.Serializer):
-    phone = serializers.CharField(validators=[phone_regex], max_length=12)
+    phone = serializers.CharField(max_length=12)
     code = serializers.IntegerField(max_value=9999)
     password = serializers.CharField(max_length=64)
     last_name = serializers.CharField(max_length=123)
@@ -46,5 +46,5 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'phone', 'name', 'last_name']
 
-    phone = serializers.CharField(max_length=13, validators=[phone_regex])
+    phone = serializers.CharField(max_length=13)
     id = serializers.IntegerField(read_only=True)
