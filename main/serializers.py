@@ -52,7 +52,6 @@ class SubjectSerializer(serializers.ModelSerializer):
 
 class UserSubjectListSerializer(serializers.ModelSerializer):
     subject = SubjectSerializer()
-    subject_items = SubjectItemsSerializer()
 
     class Meta:
         model = UserSubject
